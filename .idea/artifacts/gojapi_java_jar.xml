@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="gojapi-java:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/gojapi_java_jar</output-path>
+    <root id="archive" name="gojapi-java.jar">
+      <element id="module-output" name="gojapi-java" />
+    </root>
+  </artifact>
+</component>
