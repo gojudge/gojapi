@@ -14,7 +14,9 @@ import org.json.JSONObject;
 public class JudgerTCP {
     private Socket conn;
     private String host;
+    private String judger_os;
     private int port;
+    private char mark = '#';
 
     public JudgerTCP(String host, int port, String password) throws IOException {
         this.host = host;
@@ -24,8 +26,15 @@ public class JudgerTCP {
         this.conn = new Socket(this.host, this.port);
 
         // read out the response message from server
-        String msg = this.read();
-        System.out.println(msg);
+        String header = this.Read();
+        System.out.println(header);
+        int idx = header.indexOf(this.mark);
+        if (idx > 0){
+            idx = idx - 1;
+        }else{
+            idx = 0;
+        }
+        this.mark = header.charAt(idx);
 
         // prepare login data
         Map<String,Object> map = new HashMap<String,Object>();
@@ -35,8 +44,7 @@ public class JudgerTCP {
         // send login
         try {
             Map resp = this.Request(map);
-            String os = resp.get("os").toString();
-            System.out.println("os: "+os);
+            this.judger_os = resp.get("os").toString();
         } catch (JSONException e) {
             e.printStackTrace();
             System.out.println("send request error!");
@@ -51,29 +59,34 @@ public class JudgerTCP {
      * @throws JSONException json parse exception
      */
     public Map Request(Map<String,Object> requst) throws IOException, JSONException {
-        String content = this.msgPack(requst);
+        String content = this.MsgPack(requst);
         DataOutputStream dOut = new DataOutputStream(this.conn.getOutputStream());
         dOut.write(content.getBytes());
         dOut.flush();
-        String resp = this.read();
+        String resp = this.Read();
 
         return toMap(new JSONObject(resp.toString()));
     }
 
     // reading from server
-    private String read() throws IOException {
+    private String Read() throws IOException {
         Reader reader = new InputStreamReader(this.conn.getInputStream());
-        char chars[] = new char[10240];
+        char chars[] = new char[10];
         int len;
         StringBuilder sb = new StringBuilder();
         String temp;
-        len=reader.read(chars);
-        temp = new String(chars, 0, len);
-        int index = temp.indexOf("eof");
-        if (index != -1) {//遇到eof时就结束接收
-            return "";
+
+        while (true) {
+            len = reader.read(chars);
+            temp = new String(chars, 0, len);
+            sb.append(temp);
+
+            int index = temp.indexOf(this.mark);
+            if (index != -1) {//遇到mark时就结束接收
+                break;
+            }
+
         }
-        sb.append(temp);
 
         return sb.toString();
     }
@@ -117,9 +130,9 @@ public class JudgerTCP {
     }
 
     // pack message
-    private String msgPack(Map<String,Object> map){
+    private String MsgPack(Map<String,Object> map){
         JSONObject json = new JSONObject(map);
-        return json.toString()+"\003";
+        return json.toString() + this.mark;
     }
 
     protected void finalize(){
