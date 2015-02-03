@@ -14,6 +14,7 @@ import org.json.JSONObject;
 public class JudgerTCP {
     private Socket conn;
     private String host;
+    private boolean login = false;
     private String judger_os;
     private int port;
     private char mark = '#';
@@ -44,6 +45,13 @@ public class JudgerTCP {
         // send login
         try {
             Map resp = this.Request(map);
+            boolean result = (boolean)resp.get("result");
+            this.login = result;
+
+            if (!result){
+                return;
+            }
+
             this.judger_os = resp.get("os").toString();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -133,6 +141,69 @@ public class JudgerTCP {
     private String MsgPack(Map<String,Object> map){
         JSONObject json = new JSONObject(map);
         return json.toString() + this.mark;
+    }
+
+    // encode html
+    private String HtmlEncode(String html){
+        StringBuffer out = new StringBuffer();
+        for(int i = 0; i < html.length(); i++){
+            char c = html.charAt(i);
+
+            if (c > 127 || c == '"' || c == '<' || c == '>') {
+                out.append("&#" + (int)c + ";");
+            }else {
+                out.append(c);
+            }
+        }
+
+        return out.toString();
+    }
+
+    /**
+     * 添加任务
+     * @param id 任务全局ID
+     * @param sid 连接标识
+     * @param language 语言C/C++
+     * @param code 代码
+     * @return 返回信息
+     */
+    public Map AddTask(int id, String sid, String language, String code) throws IOException, JSONException {
+        if (!this.login){
+            return null;
+        }
+
+        Map<String, Object> obj = new HashMap<String, Object>();
+        obj.put("action", "task_add");
+        obj.put("id", id);
+        obj.put("sid", sid);
+        obj.put("language", language);
+
+        code = this.HtmlEncode(code);
+
+        obj.put("code", code);
+
+        return this.Request(obj);
+    }
+
+    /**
+     * 获取任务状态
+     * @param id 任务id
+     * @param sid 连接标识
+     * @return 返回信息
+     * @throws IOException
+     * @throws JSONException
+     */
+    public Map GetStatus(int id, String sid) throws IOException, JSONException {
+        if (!this.login){
+            return null;
+        }
+
+        Map<String, Object> obj = new HashMap<String, Object>();
+        obj.put("action", "task_info");
+        obj.put("id", id);
+        obj.put("sid", sid);
+
+        return this.Request(obj);
     }
 
     protected void finalize(){
