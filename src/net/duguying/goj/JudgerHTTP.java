@@ -70,7 +70,7 @@ public class JudgerHTTP {
             return false;
         }
 
-        return (boolean)respObj.get("result");
+        return (Boolean)respObj.get("result");
     }
 
     /**

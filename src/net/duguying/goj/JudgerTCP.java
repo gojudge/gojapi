@@ -45,7 +45,7 @@ public class JudgerTCP {
         // send login
         try {
             Map resp = this.Request(map);
-            boolean result = (boolean)resp.get("result");
+            boolean result = (Boolean)resp.get("result");
             this.login = result;
 
             if (!result){
