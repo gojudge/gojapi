@@ -51,9 +51,11 @@ public class JudgerHTTP {
                 .setEntity(EntityBuilder.create().setText(content).build()).build();
         CloseableHttpResponse response = httpclient.execute(login);
         HttpEntity entity = response.getEntity();
+
+        String result = EntityUtils.toString(entity);
         httpclient.close();
 
-        return EntityUtils.toString(entity);
+        return result;
     }
 
     /**
@@ -64,6 +66,7 @@ public class JudgerHTTP {
      */
     private boolean Login(String password) {
         Map<String, Object> reqObj = new HashMap<String, Object>();
+        reqObj.put("action", "login");
         reqObj.put("password", this.password);
 
         Map respObj;
@@ -101,6 +104,7 @@ public class JudgerHTTP {
         String req = this.MsgPack(map);
         String resp = this.Post(req);
 
+        System.out.println(resp);
         JSONObject json = new JSONObject(resp);
         return this.toMap(json);
     }
