@@ -34,7 +34,7 @@ public class JudgerHTTP {
 
         this.url = "http://" + host + ":" + port;
 
-        this.login = this.Login(this.password);
+        this.login = this.Login();
 
     }
 
@@ -61,10 +61,9 @@ public class JudgerHTTP {
     /**
      * login
      *
-     * @param password the password
      * @return
      */
-    private boolean Login(String password) {
+    private boolean Login() {
         Map<String, Object> reqObj = new HashMap<String, Object>();
         reqObj.put("action", "login");
         reqObj.put("password", this.password);
@@ -111,22 +110,57 @@ public class JudgerHTTP {
 
     /**
      * add task
-     *
-     * @param obj the k-v content
+     * @param id id
+     * @param sid session id
+     * @param language language
+     * @param code code without htmlencode
      * @return the k-v response
      */
-    public Map<String, Object> AddTask(Map<String, Object> obj) {
-        return null;
+    public Map<String, Object> AddTask(int id, String sid, String language, String code) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("action", "task_add");
+        map.put("password", this.password);
+        map.put("id", id);
+        map.put("sid", sid);
+        map.put("language", language);
+        code = this.HtmlEncode(code);
+        map.put("code", code);
+
+        try {
+            return this.Request(map);
+        }catch (IOException e1){
+            e1.printStackTrace();
+            return null;
+        }catch (JSONException e2){
+            e2.printStackTrace();
+            return null;
+        }
+
     }
 
     /**
      * get task status and result
-     *
-     * @param obj the k-v request content
+     * @param id id
+     * @param sid session id
      * @return the k-v response
      */
-    public Map<String, Object> GetStatus(Map<String, Object> obj) {
-        return null;
+    public Map<String, Object> GetStatus(int id, String sid) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("action", "task_info");
+        map.put("password", this.password);
+        map.put("id", id);
+        map.put("sid", sid);
+
+        try {
+            return this.Request(map);
+        }catch (IOException e1){
+            e1.printStackTrace();
+            return null;
+        }catch (JSONException e2){
+            e2.printStackTrace();
+            return null;
+        }
+
     }
 
     // json to map
@@ -161,5 +195,21 @@ public class JudgerHTTP {
             list.add(value);
         }
         return list;
+    }
+
+    // encode html
+    private String HtmlEncode(String html){
+        StringBuffer out = new StringBuffer();
+        for(int i = 0; i < html.length(); i++){
+            char c = html.charAt(i);
+
+            if (c > 127 || c == '"' || c == '<' || c == '>') {
+                out.append("&#" + (int)c + ";");
+            }else {
+                out.append(c);
+            }
+        }
+
+        return out.toString();
     }
 }
