@@ -1,4 +1,6 @@
-# goj judger api for java
+# goj judger api for java 
+
+[![Build Status](https://travis-ci.org/gojudge/gojapi-java.svg)](https://travis-ci.org/gojudge/gojapi-java)
 
 here is the goj judger api for java developer.
 
