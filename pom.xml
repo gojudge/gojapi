@@ -1,11 +1,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>net.duguying.goj</groupId>
     <artifactId>gojapi</artifactId>
     <version>0.0.2</version>
     <packaging>jar</packaging>
+	
+	<name>goj judger client api</name>
+    <url>https://github.com/gojudge/gojapi-java</url>
+    <description>here is goj judger client api for java</description>
+    <inceptionYear>2015</inceptionYear>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git://github.com/gojudge/gojapi-java.git</connection>
+        <developerConnection>scm:git:git@github.com:gojudge/gojapi-java.git</developerConnection>
+        <url>https://github.com/gojudge/gojapi-java</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>duguying</id>
+            <name>duguying</name>
+            <email>duguying2008@gmail.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
