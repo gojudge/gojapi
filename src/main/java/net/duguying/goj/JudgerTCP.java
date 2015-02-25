@@ -186,7 +186,7 @@ public class JudgerTCP {
     }
 
     /**
-     * 获取任务状态
+     * 获取任务
      * @param id 任务id
      * @param sid 连接标识
      * @return 返回信息
